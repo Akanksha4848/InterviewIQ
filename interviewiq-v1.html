@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InterviewIQ — Structured Interview Platform</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
+
+:root {
+  --ink: #0D0D14;
+  --ink2: #3D3D52;
+  --muted: #8888A0;
+  --border: #E4E4EE;
+  --bg: #F7F7FB;
+  --white: #FFFFFF;
+  --teal: #0BA888;
+  --teal-light: #E6F7F3;
+  --amber: #F59E0B;
+  --amber-light: #FEF3C7;
+  --red: #EF4444;
+  --red-light: #FEE2E2;
+  --blue: #4F6EF7;
+  --blue-light: #EEF1FE;
+  --purple: #7C3AED;
+  --purple-light: #F5F0FF;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  font-size: 14px;
+}
+
+/* ── HEADER ── */
+header {
+  background: var(--ink);
+  padding: 0 40px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+}
+.logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--white);
+  letter-spacing: -0.5px;
+}
+.logo em { color: var(--teal); font-style: normal; }
+.header-right { display: flex; align-items: center; gap: 16px; }
+.api-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #888;
+  font-weight: 500;
+}
+.api-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #444;
+}
+.api-dot.connected { background: var(--teal); box-shadow: 0 0 0 3px rgba(11,168,136,0.2); }
+
+/* ── PROGRESS BAR ── */
+.progress-bar {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 52px;
+  overflow-x: auto;
+}
+.progress-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 20px 0 0;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.progress-step:first-child { padding-left: 0; }
+.step-num {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: var(--border);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.step-num.active { background: var(--teal); color: white; }
+.step-num.done { background: var(--teal-light); color: var(--teal); }
+.step-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  transition: color 0.2s;
+}
+.step-label.active { color: var(--ink); }
+.step-label.done { color: var(--teal); }
+.step-arrow { color: var(--border); margin-right: 20px; font-size: 16px; }
+
+/* ── MAIN ── */
+.main { max-width: 900px; margin: 0 auto; padding: 36px 24px 80px; }
+
+/* ── SCREENS ── */
+.screen { display: none; animation: fadeUp 0.3s ease; }
+.screen.active { display: block; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+/* ── TYPOGRAPHY ── */
+.screen-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 6px;
+  letter-spacing: -0.5px;
+}
+.screen-sub { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+
+/* ── CARDS ── */
+.card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+.card-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--ink);
+  margin-bottom: 14px;
+  letter-spacing: 0.3px;
+}
+
+/* ── API KEY SCREEN ── */
+.api-setup {
+  max-width: 560px;
+  margin: 60px auto 0;
+  text-align: center;
+}
+.api-icon { font-size: 48px; margin-bottom: 20px; }
+.api-setup .screen-title { font-size: 32px; }
+.api-setup .screen-sub { margin-bottom: 32px; font-size: 15px; }
+.api-input-wrap {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.api-input {
+  flex: 1;
+  padding: 13px 16px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+  background: var(--bg);
+}
+.api-input:focus { border-color: var(--teal); background: white; }
+.api-note {
+  font-size: 12px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+/* ── ROLE SELECTOR ── */
+.role-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.role-card {
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--white);
+}
+.role-card:hover { border-color: var(--teal); background: var(--teal-light); }
+.role-card.selected { border-color: var(--teal); background: var(--teal-light); }
+.role-icon { font-size: 28px; margin-bottom: 10px; }
+.role-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; margin-bottom: 4px; }
+.role-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+/* ── UPLOAD ── */
+.upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  padding: 32px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--bg);
+  position: relative;
+}
+.upload-zone:hover { border-color: var(--teal); background: var(--teal-light); }
+.upload-zone.has-file { border-color: var(--teal); background: var(--teal-light); border-style: solid; }
+.upload-icon-big { font-size: 32px; margin-bottom: 8px; }
+.upload-title { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+.upload-sub { font-size: 12px; color: var(--muted); }
+.upload-file-name { font-size: 13px; color: var(--teal); font-weight: 600; margin-top: 8px; }
+input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+.upload-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
+
+/* ── AI ANALYSIS ── */
+.analysis-loading {
+  text-align: center;
+  padding: 48px 24px;
+}
+.spinner {
+  width: 44px; height: 44px;
+  border: 3px solid var(--border);
+  border-top-color: var(--teal);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 16px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text { font-weight: 500; color: var(--ink2); margin-bottom: 6px; }
+.loading-sub { font-size: 12px; color: var(--muted); }
+
+.score-hero {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 24px;
+  background: linear-gradient(135deg, var(--ink) 0%, #1A1A3A 100%);
+  border-radius: 14px;
+  margin-bottom: 16px;
+  color: white;
+}
+.score-circle {
+  width: 90px; height: 90px;
+  border-radius: 50%;
+  background: conic-gradient(var(--teal) 0%, var(--teal) var(--pct), #ffffff22 var(--pct));
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+}
+.score-inner {
+  width: 70px; height: 70px;
+  border-radius: 50%;
+  background: var(--ink);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.score-num { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: var(--teal); }
+.score-pct { font-size: 10px; color: #888; }
+.score-text h3 { font-family: 'Syne', sans-serif; font-size: 18px; margin-bottom: 6px; }
+.score-text p { font-size: 13px; color: #AAA; line-height: 1.5; }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+
+.match-list { list-style: none; }
+.match-list li {
+  display: flex; align-items: flex-start; gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.match-list li:last-child { border-bottom: none; }
+.match-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
+.gap-item {
+  background: var(--red-light);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  border-left: 3px solid var(--red);
+}
+.gap-label { font-weight: 600; color: #991B1B; font-size: 11px; margin-bottom: 2px; }
+
+.risk-item {
+  background: var(--amber-light);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  border-left: 3px solid var(--amber);
+}
+.risk-label { font-weight: 600; color: #92400E; font-size: 11px; margin-bottom: 2px; }
+
+/* ── INTERVIEW SCREEN ── */
+.interview-layout { display: grid; grid-template-columns: 1fr 320px; gap: 20px; }
+
+.timer-bar {
+  background: var(--ink);
+  border-radius: 12px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  color: white;
+}
+.timer-display { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; color: var(--teal); }
+.timer-label { font-size: 11px; color: #888; }
+.timer-next { font-size: 12px; color: #AAA; }
+.timer-next strong { color: white; }
+
+.q-section { margin-bottom: 20px; }
+.q-section-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.q-section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.q-item-live {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 12px;
+  align-items: start;
+  transition: all 0.2s;
+}
+.q-item-live.asked { background: var(--teal-light); border-color: var(--teal); }
+.q-checkbox {
+  width: 22px; height: 22px;
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+  transition: all 0.2s;
+  font-size: 13px;
+}
+.q-checkbox.checked { background: var(--teal); border-color: var(--teal); color: white; }
+.q-text { font-size: 13px; line-height: 1.6; color: var(--ink); }
+.q-type-badge {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 4px;
+  margin-bottom: 4px;
+}
+.badge-tech { background: var(--blue-light); color: var(--blue); }
+.badge-beh { background: var(--amber-light); color: #92400E; }
+.badge-val { background: var(--purple-light); color: var(--purple); }
+.badge-gap { background: var(--red-light); color: #991B1B; }
+
+/* SIDEBAR */
+.sidebar-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 14px;
+  position: sticky;
+  top: 120px;
+}
+.sidebar-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 14px;
+  color: var(--ink);
+}
+.param-item { margin-bottom: 14px; }
+.param-label { font-size: 11px; font-weight: 600; color: var(--ink2); margin-bottom: 6px; }
+.star-row { display: flex; gap: 4px; margin-bottom: 5px; }
+.star {
+  font-size: 18px;
+  cursor: pointer;
+  color: var(--border);
+  transition: color 0.15s;
+  line-height: 1;
+}
+.star.lit { color: var(--amber); }
+.evidence-input {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  font-size: 12px;
+  font-family: 'Inter', sans-serif;
+  color: var(--ink);
+  resize: none;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.evidence-input:focus { border-color: var(--teal); }
+
+/* ALERT */
+.competency-alert {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--ink);
+  color: white;
+  padding: 14px 22px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  border-left: 4px solid var(--amber);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 999;
+  white-space: nowrap;
+}
+.competency-alert.show { transform: translateX(-50%) translateY(0); }
+
+/* ── REPORT SCREEN ── */
+.report-header {
+  background: linear-gradient(135deg, #0D1F1A 0%, #0D0D14 100%);
+  border-radius: 14px;
+  padding: 28px;
+  margin-bottom: 16px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.report-candidate h2 { font-family: 'Syne', sans-serif; font-size: 22px; margin-bottom: 4px; }
+.report-candidate p { color: #888; font-size: 13px; }
+.verdict-pill {
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+}
+.verdict-hire { background: var(--teal); color: white; }
+.verdict-lean { background: var(--amber); color: var(--ink); }
+.verdict-no { background: var(--red); color: white; }
+
+.report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+.report-param {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.rp-label { font-size: 11px; color: var(--muted); font-weight: 600; margin-bottom: 6px; }
+.rp-stars { display: flex; gap: 3px; margin-bottom: 4px; }
+.rp-star { font-size: 14px; }
+.rp-evidence { font-size: 12px; color: var(--ink2); font-style: italic; }
+
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 22px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+.btn-primary { background: var(--teal); color: white; }
+.btn-primary:hover { background: #099A7C; transform: translateY(-1px); }
+.btn-primary:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; transform: none; }
+.btn-secondary { background: var(--white); color: var(--ink); border: 1px solid var(--border); }
+.btn-secondary:hover { background: var(--bg); }
+.btn-row { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
+
+/* ── MISC ── */
+.divider { height: 1px; background: var(--border); margin: 20px 0; }
+.tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 500;
+}
+.tag-teal { background: var(--teal-light); color: var(--teal); }
+.tag-red { background: var(--red-light); color: #991B1B; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Interview<em>IQ</em></div>
+  <div class="header-right">
+    <div class="api-indicator">
+      <div class="api-dot" id="apiDot"></div>
+      <span id="apiStatus">No API key</span>
+    </div>
+  </div>
+</header>
+
+<div class="progress-bar">
+  <div class="progress-step" onclick="goTo('setup')">
+    <div class="step-num active" id="sn0">1</div>
+    <div class="step-label active" id="sl0">Setup</div>
+  </div>
+  <div class="step-arrow">›</div>
+  <div class="progress-step" onclick="goTo('upload')">
+    <div class="step-num" id="sn1">2</div>
+    <div class="step-label" id="sl1">Upload</div>
+  </div>
+  <div class="step-arrow">›</div>
+  <div class="progress-step" onclick="goTo('analysis')">
+    <div class="step-num" id="sn2">3</div>
+    <div class="step-label" id="sl2">AI Analysis</div>
+  </div>
+  <div class="step-arrow">›</div>
+  <div class="progress-step" onclick="goTo('interview')">
+    <div class="step-num" id="sn3">4</div>
+    <div class="step-label" id="sl3">Interview</div>
+  </div>
+  <div class="step-arrow">›</div>
+  <div class="progress-step" onclick="goTo('report')">
+    <div class="step-num" id="sn4">5</div>
+    <div class="step-label" id="sl4">Report</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- SCREEN 0: API SETUP -->
+  <div class="screen active" id="screen-setup">
+    <div class="api-setup">
+      <div class="api-icon">🔑</div>
+      <div class="screen-title">Welcome to InterviewIQ</div>
+      <div class="screen-sub">Enter your Claude API key to get started. It stays in your browser only — never stored anywhere.</div>
+      <div class="api-input-wrap">
+        <input type="password" class="api-input" id="apiKeyInput" placeholder="sk-ant-api03-..." />
+        <button class="btn btn-primary" onclick="saveApiKey()">Connect</button>
+      </div>
+      <div class="api-note">🔒 Your key is only used locally in this browser session</div>
+      <div style="margin-top:12px;">
+        <button class="btn btn-secondary" onclick="useDemoMode()" style="width:100%;justify-content:center;margin-top:8px;">
+          👁 Use Demo Mode (no API key needed)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 1: UPLOAD -->
+  <div class="screen" id="screen-upload">
+    <div class="screen-title">New Interview Session</div>
+    <div class="screen-sub">Select the role type and upload the Job Description and Candidate CV.</div>
+
+    <div class="card">
+      <div class="card-title">Role Type</div>
+      <div class="role-grid">
+        <div class="role-card" id="role-pm" onclick="selectRole('PM')">
+          <div class="role-icon">🎯</div>
+          <div class="role-name">Product Manager</div>
+          <div class="role-desc">Product vision, roadmap ownership, stakeholder alignment, go-to-market</div>
+        </div>
+        <div class="role-card" id="role-ba" onclick="selectRole('BA')">
+          <div class="role-icon">📊</div>
+          <div class="role-name">Business Analyst</div>
+          <div class="role-desc">Requirements gathering, process mapping, data analysis, solution design</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="upload-grid">
+      <div class="card">
+        <div class="card-title">Job Description</div>
+        <div class="upload-zone" id="jdZone">
+          <input type="file" accept=".pdf,.doc,.docx,.txt" onchange="handleFile('jd', this)" />
+          <div class="upload-icon-big">📄</div>
+          <div class="upload-title">Upload JD</div>
+          <div class="upload-sub">PDF, Word or TXT</div>
+          <div class="upload-file-name" id="jdFileName"></div>
+        </div>
+        <div style="margin-top:12px;">
+          <textarea id="jdText" placeholder="Or paste JD text here..." style="width:100%;height:80px;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:12px;resize:none;font-family:Inter,sans-serif;outline:none;"></textarea>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Candidate CV</div>
+        <div class="upload-zone" id="cvZone">
+          <input type="file" accept=".pdf,.doc,.docx,.txt" onchange="handleFile('cv', this)" />
+          <div class="upload-icon-big">👤</div>
+          <div class="upload-title">Upload CV</div>
+          <div class="upload-sub">PDF, Word or TXT</div>
+          <div class="upload-file-name" id="cvFileName"></div>
+        </div>
+        <div style="margin-top:12px;">
+          <textarea id="cvText" placeholder="Or paste CV text here..." style="width:100%;height:80px;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:12px;resize:none;font-family:Inter,sans-serif;outline:none;"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="runAnalysis()" id="analyseBtn">Analyse with AI →</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: ANALYSIS -->
+  <div class="screen" id="screen-analysis">
+    <div class="screen-title">AI Analysis</div>
+    <div class="screen-sub">Reviewing JD and CV — generating your interview kit.</div>
+
+    <div id="analysisLoading" class="card analysis-loading">
+      <div class="spinner"></div>
+      <div class="loading-text">Reading documents...</div>
+      <div class="loading-sub">Comparing skills, identifying gaps, generating questions</div>
+    </div>
+
+    <div id="analysisResult" style="display:none;">
+      <div class="score-hero" id="scoreHero"></div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">✅ Skills Matched</div>
+          <ul class="match-list" id="matchedList"></ul>
+        </div>
+        <div class="card">
+          <div class="card-title">❌ Skills Missing</div>
+          <div id="missingList"></div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">⚠️ Experience Gaps</div>
+          <div id="gapsList"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">🚩 Potential Risks</div>
+          <div id="risksList"></div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goTo('upload')">← Back</button>
+        <button class="btn btn-primary" onclick="goTo('interview')">Start Interview →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: INTERVIEW -->
+  <div class="screen" id="screen-interview">
+    <div class="screen-title">Live Interview</div>
+    <div class="screen-sub">Work through the questions. Tick each one as you ask it. Rate answers on the right.</div>
+
+    <div class="timer-bar">
+      <div>
+        <div class="timer-label">TIME ELAPSED</div>
+        <div class="timer-display" id="timerDisplay">00:00</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="timer-label">SUGGESTED NEXT</div>
+        <div class="timer-next" id="nextSection">→ <strong>Technical</strong></div>
+      </div>
+      <button class="btn btn-secondary" onclick="toggleTimer()" id="timerBtn" style="font-size:12px;padding:8px 14px;">▶ Start</button>
+    </div>
+
+    <div class="interview-layout">
+      <div>
+        <div id="questionsList"></div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="finishInterview()">Complete Interview →</button>
+        </div>
+      </div>
+      <div>
+        <div class="sidebar-card">
+          <div class="sidebar-title">LIVE SCORECARD</div>
+          <div id="scorecardParams"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 4: REPORT -->
+  <div class="screen" id="screen-report">
+    <div class="screen-title">Interview Report</div>
+    <div class="screen-sub">AI-generated summary. Review, edit if needed, then submit to hiring manager.</div>
+
+    <div class="report-header" id="reportHeader"></div>
+
+    <div class="card">
+      <div class="card-title">Parameter Scores</div>
+      <div class="report-grid" id="reportParams"></div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">💪 Strengths</div>
+        <ul class="match-list" id="reportStrengths"></ul>
+      </div>
+      <div class="card">
+        <div class="card-title">⚠️ Concerns</div>
+        <ul class="match-list" id="reportConcerns"></ul>
+      </div>
+    </div>
+
+    <div class="card" id="reportMeta"></div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goTo('interview')">← Back</button>
+      <button class="btn btn-primary" onclick="alert('Report submitted to hiring manager! ✓')">Submit Report ✓</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ALERT -->
+<div class="competency-alert" id="compAlert">⚠️ You haven't assessed <span id="alertParam"></span> yet</div>
+
+<script>
+// ── STATE ──
+let state = {
+  apiKey: '',
+  demoMode: false,
+  role: '',
+  jdContent: '',
+  cvContent: '',
+  analysis: null,
+  scores: {},
+  evidence: {},
+  timerRunning: false,
+  timerSec: 0,
+  timerInt: null,
+  currentScreen: 'setup'
+};
+
+const PARAMS = {
+  PM: ['Product Thinking', 'Stakeholder Management', 'Prioritisation', 'Communication', 'Leadership'],
+  BA: ['Requirements Gathering', 'Process Analysis', 'Stakeholder Management', 'Communication', 'Analytical Depth']
+};
+
+// ── DEMO DATA ──
+const DEMO = {
+  score: 78,
+  verdict: 'Lean Hire',
+  summary: 'Strong consulting background with good stakeholder skills. Gaps in BFSI and budget ownership need probing.',
+  matched: ['Agile Delivery', 'Stakeholder Management', 'Project Governance', 'Client Communication'],
+  missing: ['Financial Services Experience', 'Budget Ownership', 'RAID Log Management'],
+  gaps: ['Only 4 years experience vs 6 required', 'No mention of independent budget management'],
+  risks: ['Career gap of 8 months in 2022 — needs explanation', 'Short tenure at last role (11 months)'],
+  questions: {
+    Technical: [
+      'Walk me through how you structure a requirements gathering session with a difficult client.',
+      'How do you manage a RAID log across multiple workstreams?',
+      'Describe your experience with Agile ceremonies — which do you find most valuable and why?'
+    ],
+    Behavioural: [
+      'Tell me about a time you had to push back on a senior stakeholder. What happened?',
+      'Describe a situation where your project was going off-track. How did you recover it?',
+      'Give me an example of influencing without authority.'
+    ],
+    'Resume Validation': [
+      'You mention a 30-country implementation — what was your specific role and team size?',
+      'Walk me through the 8-month gap in 2022.',
+      'Your last role was 11 months — why did you leave?'
+    ],
+    'Gap Probing': [
+      'How would you ramp up quickly in a BFSI engagement with no prior sector experience?',
+      'Have you ever owned a project budget independently? What was the value?'
+    ]
+  }
+};
+
+// ── NAVIGATION ──
+const screens = ['setup','upload','analysis','interview','report'];
+function goTo(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  state.currentScreen = name;
+  updateProgress(screens.indexOf(name));
+}
+
+function updateProgress(idx) {
+  for (let i = 0; i < 5; i++) {
+    const num = document.getElementById('sn' + i);
+    const lbl = document.getElementById('sl' + i);
+    num.className = 'step-num' + (i < idx ? ' done' : i === idx ? ' active' : '');
+    lbl.className = 'step-label' + (i < idx ? ' done' : i === idx ? ' active' : '');
+    num.textContent = i < idx ? '✓' : i + 1;
+  }
+}
+
+// ── API SETUP ──
+function saveApiKey() {
+  const key = document.getElementById('apiKeyInput').value.trim();
+  if (!key.startsWith('sk-ant')) { alert('Please enter a valid Claude API key (starts with sk-ant)'); return; }
+  state.apiKey = key;
+  state.demoMode = false;
+  document.getElementById('apiDot').classList.add('connected');
+  document.getElementById('apiStatus').textContent = 'API connected';
+  goTo('upload');
+}
+
+function useDemoMode() {
+  state.demoMode = true;
+  state.apiKey = '';
+  document.getElementById('apiDot').style.background = '#F59E0B';
+  document.getElementById('apiStatus').textContent = 'Demo mode';
+  goTo('upload');
+}
+
+// ── ROLE + UPLOAD ──
+function selectRole(r) {
+  state.role = r;
+  document.getElementById('role-pm').classList.toggle('selected', r === 'PM');
+  document.getElementById('role-ba').classList.toggle('selected', r === 'BA');
+}
+
+function handleFile(type, input) {
+  const file = input.files[0];
+  if (!file) return;
+  const zone = document.getElementById(type + 'Zone');
+  const nameEl = document.getElementById(type + 'FileName');
+  zone.classList.add('has-file');
+  nameEl.textContent = '✓ ' + file.name;
+  const reader = new FileReader();
+  reader.onload = e => {
+    if (type === 'jd') state.jdContent = e.target.result;
+    else state.cvContent = e.target.result;
+  };
+  reader.readAsText(file);
+}
+
+// ── ANALYSIS ──
+async function runAnalysis() {
+  if (!state.role) { alert('Please select a role type first.'); return; }
+  const jdText = document.getElementById('jdText').value || state.jdContent;
+  const cvText = document.getElementById('cvText').value || state.cvContent;
+  if (!jdText && !cvText && !state.demoMode) { alert('Please upload or paste the JD and CV.'); return; }
+  state.jdContent = jdText;
+  state.cvContent = cvText;
+  goTo('analysis');
+  document.getElementById('analysisLoading').style.display = 'block';
+  document.getElementById('analysisResult').style.display = 'none';
+  if (state.demoMode) {
+    await sleep(2200);
+    state.analysis = DEMO;
+  } else {
+    await callClaude(jdText, cvText);
+  }
+  renderAnalysis();
+}
+
+async function callClaude(jd, cv) {
+  const prompt = `You are an expert interviewer. Analyse this Job Description and CV for a ${state.role} role.
+
+JD: ${jd || '[Sample JD: Senior PM role requiring 5+ years, Agile, BFSI experience, stakeholder management, budget ownership]'}
+
+CV: ${cv || '[Sample CV: 4 years consulting experience, Agile certified, strong stakeholder skills, no BFSI]'}
+
+Respond ONLY with valid JSON in this exact format, no other text:
+{
+  "score": <number 0-100>,
+  "verdict": "<Strong Hire | Hire | Lean Hire | No Hire>",
+  "summary": "<2 sentence summary>",
+  "matched": ["<skill>", ...],
+  "missing": ["<skill>", ...],
+  "gaps": ["<gap description>", ...],
+  "risks": ["<risk description>", ...],
+  "questions": {
+    "Technical": ["<question>", "<question>", "<question>"],
+    "Behavioural": ["<question>", "<question>", "<question>"],
+    "Resume Validation": ["<question>", "<question>"],
+    "Gap Probing": ["<question>", "<question>"]
+  }
+}`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': state.apiKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 1500, messages: [{ role: 'user', content: prompt }] })
+    });
+    const data = await res.json();
+    const text = data.content[0].text.replace(/```json|```/g, '').trim();
+    state.analysis = JSON.parse(text);
+  } catch(e) {
+    console.error(e);
+    state.analysis = DEMO;
+  }
+}
+
+function renderAnalysis() {
+  document.getElementById('analysisLoading').style.display = 'none';
+  document.getElementById('analysisResult').style.display = 'block';
+  const a = state.analysis;
+
+  // Score hero
+  const pct = a.score + '%';
+  document.getElementById('scoreHero').innerHTML = `
+    <div class="score-circle" style="--pct:${pct}">
+      <div class="score-inner">
+        <div class="score-num">${a.score}</div>
+        <div class="score-pct">/ 100</div>
+      </div>
+    </div>
+    <div class="score-text">
+      <h3>${a.verdict}</h3>
+      <p>${a.summary}</p>
+    </div>`;
+
+  // Matched
+  document.getElementById('matchedList').innerHTML = a.matched.map(s =>
+    `<li><span class="match-icon">✅</span>${s}</li>`).join('');
+
+  // Missing
+  document.getElementById('missingList').innerHTML = a.missing.map(s =>
+    `<div class="gap-item"><div class="gap-label">MISSING</div>${s}</div>`).join('');
+
+  // Gaps
+  document.getElementById('gapsList').innerHTML = a.gaps.map(g =>
+    `<div class="gap-item"><div class="gap-label">GAP</div>${g}</div>`).join('');
+
+  // Risks
+  document.getElementById('risksList').innerHTML = a.risks.map(r =>
+    `<div class="risk-item"><div class="risk-label">RISK</div>${r}</div>`).join('');
+}
+
+// ── INTERVIEW ──
+function goToInterview() { goTo('interview'); }
+
+document.addEventListener('DOMContentLoaded', () => {});
+
+function renderInterviewScreen() {
+  const a = state.analysis || DEMO;
+  const ql = document.getElementById('questionsList');
+  ql.innerHTML = '';
+  const badges = { Technical:'badge-tech', Behavioural:'badge-beh', 'Resume Validation':'badge-val', 'Gap Probing':'badge-gap' };
+  Object.entries(a.questions).forEach(([section, qs]) => {
+    let html = `<div class="q-section"><div class="q-section-title">${section}</div>`;
+    qs.forEach((q, i) => {
+      const id = `q_${section}_${i}`;
+      html += `<div class="q-item-live" id="${id}">
+        <div class="q-checkbox" onclick="toggleQ('${id}')"></div>
+        <div>
+          <div class="q-type-badge ${badges[section]||'badge-tech'}">${section}</div>
+          <div class="q-text">${q}</div>
+        </div>
+      </div>`;
+    });
+    html += '</div>';
+    ql.innerHTML += html;
+  });
+
+  // Scorecard params
+  const params = PARAMS[state.role] || PARAMS.PM;
+  params.forEach(p => { state.scores[p] = 0; state.evidence[p] = ''; });
+  document.getElementById('scorecardParams').innerHTML = params.map(p => `
+    <div class="param-item">
+      <div class="param-label">${p}</div>
+      <div class="star-row" id="stars_${p.replace(/\s/g,'_')}">
+        ${[1,2,3,4,5].map(n => `<span class="star" onclick="rateStar('${p}',${n})">★</span>`).join('')}
+      </div>
+      <textarea class="evidence-input" rows="1" placeholder="Evidence note..." oninput="state.evidence['${p}']=this.value" id="ev_${p.replace(/\s/g,'_')}"></textarea>
+    </div>`).join('<div class="divider"></div>');
+}
+
+function toggleQ(id) {
+  const el = document.getElementById(id);
+  const cb = el.querySelector('.q-checkbox');
+  const checked = cb.classList.toggle('checked');
+  if (checked) cb.textContent = '✓';
+  else cb.textContent = '';
+  el.classList.toggle('asked', checked);
+  updateNextSection();
+}
+
+function rateStar(param, n) {
+  state.scores[param] = n;
+  const stars = document.querySelectorAll(`#stars_${param.replace(/\s/g,'_')} .star`);
+  stars.forEach((s, i) => s.classList.toggle('lit', i < n));
+}
+
+function updateNextSection() {
+  const sections = ['Technical','Behavioural','Resume Validation','Gap Probing'];
+  const a = state.analysis || DEMO;
+  for (const sec of sections) {
+    const qs = a.questions[sec] || [];
+    const asked = qs.filter((_, i) => {
+      const el = document.getElementById(`q_${sec}_${i}`);
+      return el && el.querySelector('.q-checkbox').classList.contains('checked');
+    });
+    if (asked.length < qs.length) {
+      document.getElementById('nextSection').innerHTML = `→ <strong>${sec}</strong>`;
+      return;
+    }
+  }
+  document.getElementById('nextSection').innerHTML = `<strong style="color:var(--teal)">All sections covered ✓</strong>`;
+}
+
+// ── TIMER ──
+function toggleTimer() {
+  if (state.timerRunning) {
+    clearInterval(state.timerInt);
+    state.timerRunning = false;
+    document.getElementById('timerBtn').textContent = '▶ Resume';
+  } else {
+    state.timerRunning = true;
+    document.getElementById('timerBtn').textContent = '⏸ Pause';
+    state.timerInt = setInterval(() => {
+      state.timerSec++;
+      const m = String(Math.floor(state.timerSec/60)).padStart(2,'0');
+      const s = String(state.timerSec%60).padStart(2,'0');
+      document.getElementById('timerDisplay').textContent = `${m}:${s}`;
+    }, 1000);
+  }
+}
+
+// ── COMPETENCY ALERT ──
+function checkMissingParams() {
+  const params = PARAMS[state.role] || PARAMS.PM;
+  const unscored = params.filter(p => !state.scores[p] || state.scores[p] === 0);
+  if (unscored.length > 0) {
+    document.getElementById('alertParam').textContent = unscored[0];
+    const alert = document.getElementById('compAlert');
+    alert.classList.add('show');
+    setTimeout(() => alert.classList.remove('show'), 4000);
+    return false;
+  }
+  return true;
+}
+
+function finishInterview() {
+  clearInterval(state.timerInt);
+  state.timerRunning = false;
+  if (!checkMissingParams()) return;
+  goTo('report');
+  renderReport();
+}
+
+// ── REPORT ──
+function renderReport() {
+  const a = state.analysis || DEMO;
+  const params = PARAMS[state.role] || PARAMS.PM;
+  const verdictClass = a.verdict.includes('Strong') ? 'verdict-hire' : a.verdict.includes('Lean') ? 'verdict-lean' : a.verdict === 'Hire' ? 'verdict-hire' : 'verdict-no';
+  document.getElementById('reportHeader').innerHTML = `
+    <div class="report-candidate">
+      <h2>Candidate Interview Report</h2>
+      <p>${state.role} Role · ${new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}</p>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-size:36px;font-family:Syne,sans-serif;font-weight:800;color:var(--teal);margin-bottom:4px;">${a.score}</div>
+      <div class="verdict-pill ${verdictClass}">${a.verdict}</div>
+    </div>`;
+
+  document.getElementById('reportParams').innerHTML = params.map(p => {
+    const score = state.scores[p] || 0;
+    const ev = state.evidence[p] || 'No notes added';
+    return `<div class="report-param">
+      <div class="rp-label">${p}</div>
+      <div class="rp-stars">${[1,2,3,4,5].map(n => `<span class="rp-star" style="color:${n<=score?'var(--amber)':'var(--border)'}">★</span>`).join('')}</div>
+      <div class="rp-evidence">"${ev}"</div>
+    </div>`;
+  }).join('');
+
+  const avgScore = params.reduce((s,p) => s + (state.scores[p]||0), 0) / params.length;
+  const strengths = params.filter(p => (state.scores[p]||0) >= 4);
+  const concerns = params.filter(p => (state.scores[p]||0) <= 2);
+
+  document.getElementById('reportStrengths').innerHTML = (strengths.length ? strengths : ['Good communication observed']).map(s =>
+    `<li><span class="match-icon">💪</span>${s}</li>`).join('');
+
+  document.getElementById('reportConcerns').innerHTML = (concerns.length ? concerns : a.risks.slice(0,2)).map(c =>
+    `<li><span class="match-icon">⚠️</span>${c}</li>`).join('');
+
+  const level = avgScore >= 4 ? 'Senior Consultant / Manager' : avgScore >= 3 ? 'Consultant' : 'Analyst';
+  document.getElementById('reportMeta').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;">
+      <div><div style="font-size:11px;color:var(--muted);margin-bottom:4px;">SUGGESTED LEVEL</div><div style="font-weight:600;">${level}</div></div>
+      <div><div style="font-size:11px;color:var(--muted);margin-bottom:4px;">INTERVIEW DURATION</div><div style="font-weight:600;">${Math.floor(state.timerSec/60)} minutes</div></div>
+      <div><div style="font-size:11px;color:var(--muted);margin-bottom:4px;">CONFIDENCE</div><div style="font-weight:600;">${a.score}%</div></div>
+    </div>`;
+}
+
+// ── OVERRIDE goTo for interview screen ──
+const _goTo = goTo;
+window.goTo = function(name) {
+  _goTo(name);
+  if (name === 'interview') {
+    if (!state.analysis) state.analysis = DEMO;
+    renderInterviewScreen();
+  }
+};
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+</script>
+</body>
+</html>
